@@ -1,23 +1,54 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [textareaContent, setTextareaContent] = useState('');
+  const [response, setResponse] = useState('');
+
+  const handleSendRequest = async () => {
+    try {
+      const response = await fetch('http://localhost:1234/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: textareaContent,
+          additionalInstructions: 'Put any additional instructions here'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch');
+      }
+
+      const data = await response.json();
+      setResponse(data.response);
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error as needed
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>OpenAI Text Analysis</h1>
+      Response: {response}
+      <textarea
+        rows="10"
+        cols="50"
+        value={textareaContent}
+        onChange={(e) => setTextareaContent(e.target.value)}
+      />
+      <br />
+      <button onClick={handleSendRequest}>Analyze Text</button>
+      <br />
+      {response && (
+        <div>
+          <h2>Analysis Result:</h2>
+          <p>{response}</p>
+        </div>
+      )}
     </div>
   );
 }

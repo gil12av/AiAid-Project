@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm install --prefix . && npm install --prefix client && npm install --prefix server && (npm run start:server & npm run start:client)",
+    "start:server": "npm start --prefix server",
+    "start:client": "npm start --prefix client",
     "test": "test"
   },
   "repository": {
